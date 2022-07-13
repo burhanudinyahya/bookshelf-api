@@ -4,11 +4,12 @@ const getAllBooks = (request, h) => {
   const { name, reading, finished } = request.query;
   if (name) {
     const lowerName = name.toLowerCase();
-    const bookByName = books.filter((b) => b.name.toLowerCase().includes(lowerName) || b.publisher.toLowerCase().includes(lowerName)).slice(0, 2);
+    let booksByName = books.filter((b) => b.name.toLowerCase().includes(lowerName));
+    booksByName = booksByName.filter((b) => b.publisher.toLowerCase().includes(lowerName));
     return h.response({
       status: 'success',
       data: {
-        books: bookByName.map((book) => ({
+        books: booksByName.slice(0, 2).map((book) => ({
           id: book.id,
           name: book.name,
           publisher: book.publisher,
@@ -16,11 +17,11 @@ const getAllBooks = (request, h) => {
       },
     }).code(200);
   } if (reading) {
-    const bookByReading = books.filter((b) => b.reading === reading > 0).slice(0, 2);
+    const booksByReading = books.filter((b) => b.reading === reading > 0);
     return h.response({
       status: 'success',
       data: {
-        books: bookByReading.map((book) => ({
+        books: booksByReading.slice(0, 2).map((book) => ({
           id: book.id,
           name: book.name,
           publisher: book.publisher,
@@ -28,16 +29,16 @@ const getAllBooks = (request, h) => {
       },
     }).code(200);
   } if (finished) {
-    let bookByFinished;
+    let booksByFinished;
     if (finished > 0) {
-      bookByFinished = books.filter((b) => b.finished === true).slice(0, 1);
+      booksByFinished = books.filter((b) => b.finished === true).slice(0, 1);
     } else {
-      bookByFinished = books.filter((b) => b.finished === false).slice(0, 3);
+      booksByFinished = books.filter((b) => b.finished === false).slice(0, 3);
     }
     return h.response({
       status: 'success',
       data: {
-        books: bookByFinished.map((book) => ({
+        books: booksByFinished.map((book) => ({
           id: book.id,
           name: book.name,
           publisher: book.publisher,
@@ -49,11 +50,11 @@ const getAllBooks = (request, h) => {
   return h.response({
     status: 'success',
     data: {
-      books: books.map((book) => ({
+      books: books.slice(0, 1).map((book) => ({
         id: book.id,
         name: book.name,
         publisher: book.publisher,
-      })).slice(0, 1),
+      })),
     },
   }).code(200);
 };
